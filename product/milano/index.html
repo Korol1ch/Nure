@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NURE — Пальто Milano</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Montserrat', sans-serif; background: #f8f7f4; color: #1a1a1a; overflow-x: hidden; }
+a { text-decoration: none; color: inherit; }
+
+/* ─── NAV BACKDROP ─── */
+.nav-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0); z-index: 190; pointer-events: none; transition: background 0.4s cubic-bezier(0.77,0,0.175,1); }
+.nav-backdrop.active { background: rgba(0,0,0,0.35); pointer-events: auto; }
+
+/* ─── NAV OVERLAY ─── */
+.nav-overlay { position: fixed; top: 0; right: 0; width: 90vw; height: 100vh; background: #f8f7f4; z-index: 200; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.77,0,0.175,1); overflow-y: auto; }
+.nav-overlay.active { transform: translateX(0); }
+.nav-header { display: flex; justify-content: space-between; align-items: center; height: 56px; width: 87%; margin: 0 auto; flex-shrink: 0; border-bottom: 1px solid rgba(0,0,0,0.09); }
+.nav-logo { width: 52px; }
+.nav-close { background: none; border: none; color: #1a1a1a; font-size: 20px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 300; line-height: 1; }
+.nav-links { display: flex; flex-direction: column; gap: 28px; margin-top: 32px; padding: 0 24px; }
+.nav-links a { color: #1a1a1a; text-decoration: none; font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 400; letter-spacing: 0.04em; }
+.nav-links a.active { border-bottom: 1.5px solid #1a1a1a; padding-bottom: 2px; display: inline-block; }
+.nav-benefits { margin-top: 28px; border-top: 1px solid rgba(0,0,0,0.08); padding: 20px 24px 0; }
+.nav-benefits__title { font-family: 'Playfair Display', serif; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; color: rgba(0,0,0,0.35); margin-bottom: 16px; }
+.nav-benefit-item { display: flex; gap: 14px; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.06); padding: 14px 0; }
+.nav-benefit-item:last-child { border-bottom: none; }
+.nav-benefit-icon { font-size: 16px; color: rgba(0,0,0,0.3); min-width: 20px; }
+.nav-benefit-name { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; margin-bottom: 3px; color: #1a1a1a; }
+.nav-benefit-desc { font-size: 10px; font-weight: 300; color: rgba(0,0,0,0.45); line-height: 1.5; }
+.nav-socials { display: flex; flex-direction: column; gap: 16px; margin-top: auto; margin-bottom: 32px; padding: 0 24px; }
+.nav-socials a { color: rgba(0,0,0,0.45); text-decoration: none; font-size: 13px; display: flex; align-items: center; gap: 10px; }
+.social-icon { font-size: 14px; }
+
+/* ─── HEADER ─── */
+.header { position: sticky; top: 0; width: 100%; height: 56px; background: #f8f7f4; border-bottom: 1px solid rgba(0,0,0,0.07); z-index: 100; display: flex; justify-content: center; }
+.header-inner { width: 92%; height: 100%; display: flex; justify-content: space-between; align-items: center; }
+.header-logo img { height: 22px; width: auto; }
+.header-icons { display: flex; align-items: center; gap: 18px; }
+.icon-btn { background: none; border: none; cursor: pointer; color: #1a1a1a; padding: 4px; position: relative; display: flex; align-items: center; }
+.icon-btn svg { width: 20px; height: 20px; display: block; }
+.badge { position: absolute; top: -4px; right: -6px; width: 16px; height: 16px; background: #1a1a1a; color: white; border-radius: 50%; font-size: 8px; font-weight: 600; display: flex; align-items: center; justify-content: center; line-height: 1; }
+.burger { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; gap: 4.5px; padding: 4px; }
+.burger span { display: block; width: 22px; height: 1.5px; background: #1a1a1a; border-radius: 2px; }
+
+/* ─── BREADCRUMB ─── */
+.breadcrumb { padding: 14px 20px 0; display: flex; align-items: center; gap: 8px; }
+.breadcrumb a { font-size: 11px; color: rgba(0,0,0,0.4); letter-spacing: 0.06em; }
+.breadcrumb span { font-size: 11px; color: rgba(0,0,0,0.25); }
+.breadcrumb p { font-size: 11px; color: rgba(0,0,0,0.6); letter-spacing: 0.04em; }
+
+/* ─── ГАЛЕРЕЯ ─── */
+.gallery { position: relative; overflow: hidden; background: #ede9e3; }
+.gallery__main { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; transition: opacity 0.3s; }
+.gallery__thumbs { display: flex; gap: 6px; padding: 10px 16px; overflow-x: auto; scrollbar-width: none; }
+.gallery__thumbs::-webkit-scrollbar { display: none; }
+.gallery__thumb { width: 60px; height: 76px; object-fit: cover; border-radius: 4px; cursor: pointer; opacity: 0.5; transition: opacity 0.2s; flex-shrink: 0; border: 1.5px solid transparent; }
+.gallery__thumb.active { opacity: 1; border-color: #1a1a1a; }
+
+/* ─── PRODUCT INFO ─── */
+.product-info { padding: 20px 20px 0; }
+.product-info__top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+.product-info__name { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 500; letter-spacing: 0.02em; line-height: 1.2; color: #1a1a1a; }
+.wish-toggle { background: none; border: none; cursor: pointer; padding: 4px; color: rgba(0,0,0,0.35); flex-shrink: 0; margin-top: 4px; }
+.wish-toggle svg { width: 22px; height: 22px; }
+.wish-toggle.active svg { fill: #1a1a1a; stroke: #1a1a1a; }
+.product-info__cat { font-size: 11px; font-weight: 400; color: rgba(0,0,0,0.4); letter-spacing: 0.12em; margin-bottom: 14px; }
+.product-info__price { font-size: 22px; font-weight: 600; color: #1a1a1a; margin-bottom: 24px; }
+
+/* ─── ЦВЕТА ─── */
+.section-label { font-size: 10px; font-weight: 500; letter-spacing: 0.14em; color: rgba(0,0,0,0.4); margin-bottom: 12px; }
+.color-section { margin-bottom: 24px; }
+.color-row { display: flex; gap: 10px; }
+.color-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; background: none; border: none; padding: 0; }
+.color-circle { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; box-shadow: 0 0 0 1px rgba(0,0,0,0.12); transition: box-shadow 0.2s, transform 0.2s; }
+.color-btn.active .color-circle { box-shadow: 0 0 0 2px #1a1a1a; transform: scale(1.1); }
+.color-btn span { font-size: 9px; letter-spacing: 0.06em; color: rgba(0,0,0,0.5); }
+
+/* ─── РАЗМЕРЫ ─── */
+.size-section { margin-bottom: 24px; }
+.size-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.size-btn { height: 40px; min-width: 52px; border: 1.5px solid rgba(0,0,0,0.16); background: none; color: rgba(0,0,0,0.55); font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; border-radius: 8px; cursor: pointer; padding: 0 14px; transition: all 0.15s; }
+.size-btn.active { background: #1a1a1a; color: white; border-color: #1a1a1a; }
+.size-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* ─── КНОПКИ ДЕЙСТВИЙ ─── */
+.action-buttons { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+.btn-cart { width: 100%; height: 52px; background: #1a1a1a; color: white; border: none; border-radius: 12px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.2em; cursor: pointer; transition: background 0.2s; }
+.btn-cart:active { background: #333; }
+.btn-whatsapp { width: 100%; height: 52px; background: none; color: #1a1a1a; border: 1.5px solid rgba(0,0,0,0.2); border-radius: 12px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.12em; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.btn-whatsapp svg { width: 18px; height: 18px; }
+
+/* ─── АККОРДЕОН ─── */
+.accordion { border-top: 1px solid rgba(0,0,0,0.09); margin: 0 -20px; }
+.accordion-item { border-bottom: 1px solid rgba(0,0,0,0.09); }
+.accordion-head { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; cursor: pointer; }
+.accordion-head p { font-size: 11px; font-weight: 500; letter-spacing: 0.14em; color: #1a1a1a; }
+.accordion-head svg { width: 16px; height: 16px; color: rgba(0,0,0,0.4); transition: transform 0.3s; flex-shrink: 0; }
+.accordion-item.open .accordion-head svg { transform: rotate(180deg); }
+.accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+.accordion-item.open .accordion-body { max-height: 300px; }
+.accordion-body p { padding: 0 20px 18px; font-size: 13px; font-weight: 300; color: rgba(0,0,0,0.65); line-height: 1.75; }
+
+/* ─── ПОХОЖИЕ ТОВАРЫ ─── */
+.related { padding: 36px 0 40px; }
+.related__title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 500; letter-spacing: 0.04em; color: #1a1a1a; padding: 0 20px; margin-bottom: 18px; }
+.related-scroll { overflow-x: auto; scrollbar-width: none; padding: 0 20px; }
+.related-scroll::-webkit-scrollbar { display: none; }
+.related-track { display: flex; gap: 12px; width: max-content; }
+.related-card { width: 160px; flex-shrink: 0; cursor: pointer; }
+.related-card__img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 6px; background: #ede9e3; display: block; margin-bottom: 10px; }
+.related-card__name { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 500; color: #1a1a1a; margin-bottom: 3px; }
+.related-card__price { font-size: 12px; font-weight: 600; color: #1a1a1a; }
+
+/* ─── ДРАВЕР КОРЗИНА ─── */
+.cart-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0); z-index: 190; pointer-events: none; transition: background 0.3s; }
+.cart-backdrop.active { background: rgba(0,0,0,0.35); pointer-events: auto; }
+.cart-drawer { position: fixed; bottom: 0; left: 0; right: 0; background: #faf9f7; z-index: 200; border-radius: 18px 18px 0 0; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.77,0,0.175,1); max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 -4px 40px rgba(0,0,0,0.09); }
+.cart-drawer::before { content: ''; display: block; width: 40px; height: 4px; background: rgba(0,0,0,0.14); border-radius: 2px; margin: 12px auto 0; flex-shrink: 0; }
+.cart-drawer.open { transform: translateY(0); }
+.cart-drawer__header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px 16px; border-bottom: 1px solid rgba(0,0,0,0.07); flex-shrink: 0; }
+.cart-drawer__title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 500; letter-spacing: 0.06em; color: #1a1a1a; }
+.cart-drawer__close { background: none; border: none; color: rgba(0,0,0,0.4); font-size: 18px; cursor: pointer; padding: 4px; }
+.cart-drawer__body { flex: 1; overflow-y: auto; }
+.cart-drawer__footer { padding: 16px 24px 32px; border-top: 1px solid rgba(0,0,0,0.07); flex-shrink: 0; }
+.cart-total { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-size: 13px; font-weight: 500; letter-spacing: 0.1em; color: #1a1a1a; }
+.cart-checkout-btn { width: 100%; height: 52px; background: #1a1a1a; color: white; border: none; border-radius: 12px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.2em; cursor: pointer; }
+.cart-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; min-height: 200px; color: rgba(0,0,0,0.3); font-size: 13px; letter-spacing: 0.05em; }
+.cart-items { padding: 0 24px 24px; }
+.cart-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid rgba(0,0,0,0.07); }
+.cart-item__info { flex: 1; }
+.cart-item__name { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 500; color: #1a1a1a; margin-bottom: 4px; }
+.cart-item__size { font-size: 11px; color: rgba(0,0,0,0.4); margin-bottom: 6px; }
+.cart-item__price { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+.cart-item__controls { display: flex; align-items: center; gap: 8px; }
+.qty-btn { width: 28px; height: 28px; border: 1px solid rgba(0,0,0,0.2); background: none; color: #1a1a1a; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+.qty-val { font-size: 14px; font-weight: 500; color: #1a1a1a; min-width: 20px; text-align: center; }
+.remove-btn { background: none; border: none; color: rgba(0,0,0,0.3); font-size: 14px; cursor: pointer; margin-left: 4px; }
+
+/* ─── TOAST ─── */
+.toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1a1a; color: white; padding: 12px 22px; border-radius: 30px; font-size: 12px; font-weight: 500; letter-spacing: 0.06em; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; z-index: 999; white-space: nowrap; }
+.toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ─── FOOTER ─── */
+.footer { padding: 36px 20px 28px; background: #1a1a1a; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; margin-top: 0; }
+.footer-logo { height: 20px; width: auto; filter: brightness(0) invert(1); }
+.footer-sub { font-size: 10px; letter-spacing: 0.35em; color: rgba(255,255,255,0.4); }
+.footer-copy { font-size: 11px; color: rgba(255,255,255,0.3); }
+.footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 20px; }
+.footer-nav a { color: rgba(255,255,255,0.5); font-size: 11px; letter-spacing: 0.1em; }
+.footer-socials { display: flex; gap: 20px; }
+.footer-socials a { color: rgba(255,255,255,0.4); font-size: 18px; }
+    </style>
+</head>
+<body>
+
+<!-- ─── NAV BACKDROP ─── -->
+<div class="nav-backdrop" id="navBackdrop"></div>
+
+<!-- ─── NAV OVERLAY ─── -->
+<div class="nav-overlay" id="navOverlay">
+    <div class="nav-header">
+        <img class="nav-logo" src="../../img/logo.png" alt="nuré">
+        <button class="nav-close" id="navClose">✕</button>
+    </div>
+    <nav class="nav-links">
+        <a href="../../index.html">ГЛАВНАЯ</a>
+        <a href="../../catalog/index.html" class="active">КАТАЛОГ</a>
+        <a href="#">НОВИНКИ</a>
+        <a href="#">О НАС</a>
+        <a href="#">КОНТАКТЫ</a>
+    </nav>
+    <div class="nav-benefits">
+        <p class="nav-benefits__title">НАШИ ПРЕИМУЩЕСТВА</p>
+        <div class="nav-benefit-item"><div class="nav-benefit-icon">◈</div><div><p class="nav-benefit-name">ПРЕМИУМ КАЧЕСТВО</p><p class="nav-benefit-desc">Используем лучшие материалы и фурнитуру</p></div></div>
+        <div class="nav-benefit-item"><div class="nav-benefit-icon">⊞</div><div><p class="nav-benefit-name">ИТАЛЬЯНСКИЕ ТКАНИ</p><p class="nav-benefit-desc">Только проверенные поставщики из Италии</p></div></div>
+        <div class="nav-benefit-item"><div class="nav-benefit-icon">⊡</div><div><p class="nav-benefit-name">БЫСТРАЯ ДОСТАВКА</p><p class="nav-benefit-desc">Доставка по Казахстану от 1 до 3 дней</p></div></div>
+        <div class="nav-benefit-item"><div class="nav-benefit-icon">◇</div><div><p class="nav-benefit-name">ЛЕГКИЙ ВОЗВРАТ</p><p class="nav-benefit-desc">Возврат в течение 14 дней без лишних вопросов</p></div></div>
+    </div>
+    <div class="nav-socials">
+        <a href="#"><span class="social-icon">◎</span> Instagram</a>
+        <a href="#"><span class="social-icon">✈</span> Telegram</a>
+    </div>
+</div>
+
+<!-- ─── КОРЗИНА ─── -->
+<div class="cart-backdrop" id="cartBackdrop"></div>
+<div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer__header">
+        <p class="cart-drawer__title">КОРЗИНА</p>
+        <button class="cart-drawer__close" id="cartClose">✕</button>
+    </div>
+    <div class="cart-drawer__body" id="cartBody">
+        <div class="cart-empty" id="cartEmpty">
+            <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <p>Корзина пуста</p>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+    </div>
+    <div class="cart-drawer__footer" id="cartFooter" style="display:none">
+        <div class="cart-total"><span>ИТОГО</span><span id="cartTotal">0 ₸</span></div>
+        <button class="cart-checkout-btn">ОФОРМИТЬ ЗАКАЗ →</button>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ─── HEADER ─── -->
+<header class="header">
+    <div class="header-inner">
+        <a href="../../index.html" class="header-logo">
+            <img src="../../img/logo.png" alt="nuré">
+        </a>
+        <div class="header-icons">
+            <a href="../../catalog/index.html" class="icon-btn" aria-label="Каталог">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </a>
+            <button class="icon-btn cart-icon-btn" id="cartBtn" aria-label="Корзина">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                <span class="badge" id="cartBadge" style="display:none">0</span>
+            </button>
+            <button class="burger" id="burgerBtn"><span></span><span></span><span></span></button>
+        </div>
+    </div>
+</header>
+
+<!-- ─── BREADCRUMB ─── -->
+<nav class="breadcrumb">
+    <a href="../../index.html">ГЛАВНАЯ</a>
+    <span>›</span>
+    <a href="../../catalog/index.html">КАТАЛОГ</a>
+    <span>›</span>
+    <p>ПАЛЬТО MILANO</p>
+</nav>
+
+<!-- ─── ГАЛЕРЕЯ ─── -->
+<div class="gallery">
+    <img class="gallery__main" id="mainImg" src="../../img/img 1.png" alt="Пальто Milano">
+</div>
+<div class="gallery__thumbs" id="thumbs"></div>
+
+<!-- ─── ИНФОРМАЦИЯ О ТОВАРЕ ─── -->
+<div class="product-info">
+    <div class="product-info__top">
+        <h1 class="product-info__name">Платье Aria</h1>
+        <button class="wish-toggle" id="wishToggle" aria-label="В избранное">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+    </div>
+    <p class="product-info__cat">Верхняя одежда</p>
+    <p class="product-info__price" id="productPrice">89 900 ₸</p>
+
+    <!-- ЦВЕТА -->
+    <div class="color-section">
+        <p class="section-label">ЦВЕТ — <span id="colorName">Зелёный</span></p>
+        <div class="color-row" id="colorRow"></div>
+    </div>
+
+    <!-- РАЗМЕРЫ -->
+    <div class="size-section">
+        <p class="section-label">РАЗМЕР</p>
+        <div class="size-row" id="sizeRow"></div>
+    </div>
+
+    <!-- КНОПКИ -->
+    <div class="action-buttons">
+        <button class="btn-cart" id="addToCartBtn">В КОРЗИНУ</button>
+        <a href="https://wa.me/77001234567?text=Хочу%20заказать%20Пальто%20Milano" class="btn-whatsapp" target="_blank">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            НАПИСАТЬ В WHATSAPP
+        </a>
+    </div>
+
+    <!-- АККОРДЕОН -->
+    <div class="accordion">
+        <div class="accordion-item open">
+            <div class="accordion-head">
+                <p>ОПИСАНИЕ</p>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="accordion-body">
+                <p>Премиальное пальто свободного кроя из натуральной шерсти. Идеально для прохладных сезонов. Классический силуэт, который не выходит из моды.</p>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <div class="accordion-head">
+                <p>СОСТАВ И УХОД</p>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="accordion-body">
+                <p>80% шерсть, 20% полиэстер. Стирка при 30°C, не отжимать, сушить в расправленном виде, не отбеливать.</p>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <div class="accordion-head">
+                <p>ДОСТАВКА И ВОЗВРАТ</p>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="accordion-body">
+                <p>Доставка по Казахстану 1–3 дня. Возврат в течение 14 дней при сохранении товарного вида и этикеток.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ─── ПОХОЖИЕ ТОВАРЫ ─── -->
+<section class="related">
+    <p class="related__title">Похожие товары</p>
+    <div class="related-scroll">
+        <div class="related-track">
+            <a href="../aria/index.html" class="related-card">
+                <img class="related-card__img" src="../../img/img 2.png" alt="Пальто Milano">
+                <p class="related-card__name">Платье Aria</p>
+                <p class="related-card__price">89 900 ₸</p>
+            </a>
+            <a href="../luna/index.html" class="related-card">
+                <img class="related-card__img" src="../../img/img 1.png" alt="Платье Luna">
+                <p class="related-card__name">Платье Luna</p>
+                <p class="related-card__price">79 900 ₸</p>
+            </a>
+            <a href="../soft/index.html" class="related-card">
+                <img class="related-card__img" src="../../img/img 2.png" alt="Костюм Soft">
+                <p class="related-card__name">Костюм Soft</p>
+                <p class="related-card__price">129 900 ₸</p>
+            </a>
+            <a href="../../catalog/index.html" class="related-card">
+                <img class="related-card__img" src="../../img/img 1.png" alt="Топ Seta">
+                <p class="related-card__name">Топ Seta</p>
+                <p class="related-card__price">34 900 ₸</p>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer class="footer">
+    <img class="footer-logo" src="../../img/logo.png" alt="nuré">
+    <p class="footer-sub">ITALIAN CLOTHING</p>
+    <p class="footer-copy">© NURE 2025</p>
+    <nav class="footer-nav">
+        <a href="../../catalog/index.html">КАТАЛОГ</a>
+        <a href="#">О НАС</a>
+        <a href="#">КОНТАКТЫ</a>
+    </nav>
+    <div class="footer-socials"><a href="#">◎</a><a href="#">✈</a></div>
+</footer>
+
+<script>
+// ─── ДАННЫЕ ТОВАРА ───
+const PRODUCT = {
+    id: 2,
+    name: 'ПАЛЬТО MILANO',
+    price: 145000,
+    sizes: ['XS', 'S', 'M', 'L'],
+    variants: [
+        { color: 'Чёрный',   code: '#1a1a1a', images: ['../../img/img 2.png', '../../img/img 1.png', '../../img/img 2.png'] },
+        { color: 'Кремовый', code: '#D4C5A9', images: ['../../img/img 1.png', '../../img/img 2.png', '../../img/img 1.png'] },
+        { color: 'Серый',    code: '#8A8A8A', images: ['../../img/img 2.png', '../../img/img 1.png', '../../img/img 2.png'] },
+    ]
+};
+
+let selectedVariant = PRODUCT.variants[0];
+let selectedSize = null;
+
+// ─── РЕНДЕР ЦВЕТОВ ───
+const colorRow = document.getElementById('colorRow');
+PRODUCT.variants.forEach((v, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'color-btn' + (i === 0 ? ' active' : '');
+    btn.innerHTML = `<div class="color-circle" style="background:${v.code}"></div><span>${v.color}</span>`;
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedVariant = v;
+        document.getElementById('colorName').textContent = v.color;
+        renderGallery();
+    });
+    colorRow.appendChild(btn);
+});
+
+// ─── РЕНДЕР ГАЛЕРЕИ ───
+function renderGallery() {
+    const main = document.getElementById('mainImg');
+    const thumbsEl = document.getElementById('thumbs');
+    main.src = selectedVariant.images[0];
+    thumbsEl.innerHTML = selectedVariant.images.map((img, i) => `
+        <img class="gallery__thumb ${i === 0 ? 'active' : ''}" src="${img}" alt="фото ${i+1}"
+             onclick="selectThumb(this, '${img}')">
+    `).join('');
+}
+function selectThumb(el, src) {
+    document.querySelectorAll('.gallery__thumb').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    const main = document.getElementById('mainImg');
+    main.style.opacity = '0';
+    setTimeout(() => { main.src = src; main.style.opacity = '1'; }, 200);
+}
+renderGallery();
+
+// ─── РЕНДЕР РАЗМЕРОВ ───
+const sizeRow = document.getElementById('sizeRow');
+PRODUCT.sizes.forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'size-btn' + (i === 0 ? ' active' : '');
+    btn.textContent = s;
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedSize = s;
+    });
+    sizeRow.appendChild(btn);
+});
+selectedSize = PRODUCT.sizes[0];
+
+// ─── КОРЗИНА ───
+let cart = JSON.parse(localStorage.getItem('nure_cart') || '[]');
+function saveCart() { localStorage.setItem('nure_cart', JSON.stringify(cart)); }
+function formatPrice(p) { return p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+function updateBadge() {
+    const total = cart.reduce((s, i) => s + i.qty, 0);
+    const cb = document.getElementById('cartBadge');
+    cb.textContent = total; cb.style.display = total > 0 ? 'flex' : 'none';
+}
+function renderCart() {
+    const body = document.getElementById('cartItems');
+    const empty = document.getElementById('cartEmpty');
+    const footer = document.getElementById('cartFooter');
+    if (cart.length === 0) { empty.style.display = 'flex'; body.innerHTML = ''; footer.style.display = 'none'; return; }
+    empty.style.display = 'none'; footer.style.display = 'block';
+    body.innerHTML = cart.map(item => `
+        <div class="cart-item">
+            <div class="cart-item__info">
+                <p class="cart-item__name">${item.name}</p>
+                <p class="cart-item__size">Размер: ${item.size}</p>
+                <p class="cart-item__price">${formatPrice(item.price)} ₸</p>
+            </div>
+            <div class="cart-item__controls">
+                <button class="qty-btn" onclick="changeQty(${item.id},'${item.size}',-1)">−</button>
+                <span class="qty-val">${item.qty}</span>
+                <button class="qty-btn" onclick="changeQty(${item.id},'${item.size}',1)">+</button>
+                <button class="remove-btn" onclick="removeItem(${item.id},'${item.size}')">✕</button>
+            </div>
+        </div>
+    `).join('');
+    document.getElementById('cartTotal').textContent = formatPrice(cart.reduce((s, i) => s + i.price * i.qty, 0)) + ' ₸';
+}
+function changeQty(id, size, delta) {
+    const idx = cart.findIndex(i => i.id === id && i.size === size);
+    if (idx === -1) return;
+    cart[idx].qty += delta;
+    if (cart[idx].qty <= 0) cart.splice(idx, 1);
+    saveCart(); renderCart(); updateBadge();
+}
+function removeItem(id, size) {
+    cart = cart.filter(i => !(i.id === id && i.size === size));
+    saveCart(); renderCart(); updateBadge();
+}
+
+document.getElementById('addToCartBtn').addEventListener('click', () => {
+    if (!selectedSize) { showToast('Выберите размер'); return; }
+    const existing = cart.find(i => i.id === PRODUCT.id && i.size === selectedSize);
+    if (existing) { existing.qty++; } else { cart.push({ id: PRODUCT.id, name: PRODUCT.name, price: PRODUCT.price, size: selectedSize, qty: 1 }); }
+    saveCart(); updateBadge();
+    showToast(PRODUCT.name + ' добавлен в корзину');
+});
+
+// ─── КОРЗИНА ДРАВЕР ───
+const cartDrawer = document.getElementById('cartDrawer');
+const cartBackdrop = document.getElementById('cartBackdrop');
+document.getElementById('cartBtn').addEventListener('click', () => { cartDrawer.classList.add('open'); cartBackdrop.classList.add('active'); document.body.style.overflow = 'hidden'; renderCart(); });
+document.getElementById('cartClose').addEventListener('click', () => { cartDrawer.classList.remove('open'); cartBackdrop.classList.remove('active'); document.body.style.overflow = ''; });
+cartBackdrop.addEventListener('click', () => { cartDrawer.classList.remove('open'); cartBackdrop.classList.remove('active'); document.body.style.overflow = ''; });
+
+// ─── ИЗБРАННОЕ (TOGGLE) ───
+let wishlist = JSON.parse(localStorage.getItem('nure_wishlist') || '[]');
+const wishToggle = document.getElementById('wishToggle');
+if (wishlist.includes(PRODUCT.id)) wishToggle.classList.add('active');
+wishToggle.addEventListener('click', () => {
+    const idx = wishlist.indexOf(PRODUCT.id);
+    if (idx === -1) { wishlist.push(PRODUCT.id); wishToggle.classList.add('active'); showToast('Добавлено в избранное'); }
+    else { wishlist.splice(idx, 1); wishToggle.classList.remove('active'); }
+    localStorage.setItem('nure_wishlist', JSON.stringify(wishlist));
+});
+
+// ─── БУРГЕР ───
+const overlay = document.getElementById('navOverlay');
+const backdrop = document.getElementById('navBackdrop');
+document.getElementById('burgerBtn').addEventListener('click', () => { overlay.classList.add('active'); backdrop.classList.add('active'); document.body.style.overflow = 'hidden'; });
+document.getElementById('navClose').addEventListener('click', () => { overlay.classList.remove('active'); backdrop.classList.remove('active'); document.body.style.overflow = ''; });
+backdrop.addEventListener('click', () => { overlay.classList.remove('active'); backdrop.classList.remove('active'); document.body.style.overflow = ''; });
+
+// ─── АККОРДЕОН ───
+document.querySelectorAll('.accordion-head').forEach(head => {
+    head.addEventListener('click', () => {
+        const item = head.closest('.accordion-item');
+        item.classList.toggle('open');
+    });
+});
+
+// ─── TOAST ───
+let toastTimer;
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('visible'), 2500);
+}
+
+updateBadge();
+</script>
+</body>
+</html>

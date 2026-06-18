@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NURE — Каталог</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ═══ ПОИСКОВЫЙ ОВЕРЛЕЙ ═══ -->
+<div class="search-overlay" id="searchOverlay">
+    <div class="search-overlay__top">
+        <div class="search-input-wrap">
+            <svg class="search-icon-inp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input class="search-input" id="searchInput" type="text" placeholder="Поиск по коллекции..." autocomplete="off">
+            <button class="search-clear" id="searchClear" aria-label="Очистить">✕</button>
+        </div>
+        <button class="search-cancel" id="searchCancel">Отмена</button>
+    </div>
+    <div class="search-suggestions" id="searchSuggestions">
+        <p class="search-hint">Популярные запросы</p>
+        <div class="search-tags">
+            <span class="search-tag">Платья</span>
+            <span class="search-tag">Пальто</span>
+            <span class="search-tag">Костюмы</span>
+            <span class="search-tag">Новинки</span>
+        </div>
+    </div>
+    <div class="search-results" id="searchResults" style="display:none">
+        <p class="search-results__title" id="searchResultsTitle"></p>
+        <div class="search-results__grid" id="searchResultsGrid"></div>
+    </div>
+</div>
+
+<!-- ═══ ИЗБРАННОЕ (DRAWER) ═══ -->
+<div class="wish-backdrop" id="wishBackdrop"></div>
+<div class="wish-drawer" id="wishDrawer">
+    <div class="cart-drawer__header">
+        <p class="cart-drawer__title">ИЗБРАННОЕ</p>
+        <button class="cart-drawer__close" id="wishClose">✕</button>
+    </div>
+    <div class="cart-drawer__body" id="wishBody">
+        <div class="cart-empty" id="wishEmpty">
+            <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            <p>Список пуст</p>
+        </div>
+        <div class="wish-items" id="wishItems"></div>
+    </div>
+</div>
+
+<!-- ═══ BACKDROP NAV ═══ -->
+<div class="nav-backdrop" id="navBackdrop"></div>
+
+<!-- ═══ NAV OVERLAY (светлый) ═══ -->
+<div class="nav-overlay" id="navOverlay">
+    <div class="nav-header">
+        <img class="nav-logo" src="img/logo.png" alt="nuré">
+        <button class="nav-close" id="navClose">✕</button>
+    </div>
+    <nav class="nav-links">
+        <a href="../index.html">ГЛАВНАЯ</a>
+        <a href="index.html" class="active">КАТАЛОГ</a>
+        <a href="#">НОВИНКИ</a>
+        <a href="#">О НАС</a>
+        <a href="#">КОНТАКТЫ</a>
+    </nav>
+    <div class="nav-benefits">
+        <p class="nav-benefits__title">НАШИ ПРЕИМУЩЕСТВА</p>
+        <div class="nav-benefit-item">
+            <div class="nav-benefit-icon">◈</div>
+            <div>
+                <p class="nav-benefit-name">ПРЕМИУМ КАЧЕСТВО</p>
+                <p class="nav-benefit-desc">Используем лучшие материалы и фурнитуру</p>
+            </div>
+        </div>
+        <div class="nav-benefit-item">
+            <div class="nav-benefit-icon">⊞</div>
+            <div>
+                <p class="nav-benefit-name">ИТАЛЬЯНСКИЕ ТКАНИ</p>
+                <p class="nav-benefit-desc">Только проверенные поставщики из Италии</p>
+            </div>
+        </div>
+        <div class="nav-benefit-item">
+            <div class="nav-benefit-icon">⊡</div>
+            <div>
+                <p class="nav-benefit-name">БЫСТРАЯ ДОСТАВКА</p>
+                <p class="nav-benefit-desc">Доставка по всей России от 1 до 3 дней</p>
+            </div>
+        </div>
+        <div class="nav-benefit-item">
+            <div class="nav-benefit-icon">◇</div>
+            <div>
+                <p class="nav-benefit-name">ЛЕГКИЙ ВОЗВРАТ</p>
+                <p class="nav-benefit-desc">Возврат в течение 14 дней без лишних вопросов</p>
+            </div>
+        </div>
+    </div>
+    <div class="nav-socials">
+        <a href="#"><span class="social-icon">◎</span> Instagram</a>
+        <a href="#"><span class="social-icon">✈</span> Telegram</a>
+    </div>
+</div>
+
+<!-- ═══ ШАПКА ═══ -->
+<header class="header">
+    <div class="header-inner">
+        <a href="../index.html" class="header-logo">
+            <img src="img/logo.png" alt="nuré">
+        </a>
+        <div class="header-icons">
+            <button class="icon-btn" aria-label="Поиск" id="searchBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+            </button>
+            <button class="icon-btn" aria-label="Избранное" id="wishBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+                <span class="badge" id="wishlistBadge" style="display:none">0</span>
+            </button>
+            <button class="icon-btn cart-icon-btn" id="cartBtn" aria-label="Корзина">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+                <span class="badge" id="cartBadge" style="display:none">0</span>
+            </button>
+            <button class="burger" id="burgerBtn">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- ═══ КАТАЛОГ ЗАГОЛОВОК ═══ -->
+<section class="catalog-hero">
+    <h1 class="catalog-hero__title">КАТАЛОГ</h1>
+    <p class="catalog-hero__sub">Элегантность, комфорт и<br>безупречное качество в каждой детали.</p>
+</section>
+
+<!-- ═══ ФИЛЬТР КАТЕГОРИЙ (горизонтальный скролл) ═══ -->
+<div class="cat-filter-wrap">
+    <div class="cat-filter" id="catFilter">
+        <button class="cat-btn active" data-cat="all">ВСЕ ТОВАРЫ</button>
+        <button class="cat-btn" data-cat="dress">ПЛАТЬЯ</button>
+        <button class="cat-btn" data-cat="outer">ВЕРХНЯЯ ОДЕЖДА</button>
+        <button class="cat-btn" data-cat="suit">КОСТЮМЫ</button>
+        <button class="cat-btn" data-cat="top">ТОПЫ</button>
+        <button class="cat-btn" data-cat="acc">АКСЕССУАРЫ</button>
+    </div>
+</div>
+
+<!-- ═══ ФИЛЬТРЫ / СОРТИРОВКА ═══ -->
+<div class="filter-row">
+    <button class="filter-btn" id="filterToggle">
+        ФИЛЬТРЫ
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+        </svg>
+    </button>
+    <div class="sort-wrap">
+        <select class="sort-select" id="sortSelect">
+            <option value="">СОРТИРОВКА</option>
+            <option value="asc">ЦЕНА: ПО ВОЗРАСТАНИЮ</option>
+            <option value="desc">ЦЕНА: ПО УБЫВАНИЮ</option>
+            <option value="new">НОВИНКИ</option>
+        </select>
+        <svg class="sort-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <polyline points="6 9 12 15 18 9"/>
+        </svg>
+    </div>
+</div>
+
+<!-- ═══ СЕТКА ТОВАРОВ ═══ -->
+<div class="products-grid" id="productsGrid">
+
+    <a href="../product/aria/index.html" style="display:contents; text-decoration:none; color:inherit;">
+    <div class="pcard" data-cat="dress" data-price="89900" data-id="1" data-name="ПЛАТЬЕ ARIA" data-slug="aria">
+        <div class="pcard__img-wrap">
+            <span class="pcard__badge">NEW</span>
+            <img src="img/img 1.png" alt="Платье Aria" class="pcard__img">
+            <button class="pcard__wish" data-id="1" aria-label="В избранное">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+        </div>
+        <div class="pcard__info">
+            <p class="pcard__name">ПЛАТЬЕ ARIA</p>
+            <p class="pcard__cat">Женское</p>
+            <p class="pcard__price">89 900 ₸</p>
+            <div class="pcard__sizes">
+                <span class="size-dot active">XS</span>
+                <span class="size-dot">S</span>
+                <span class="size-dot">M</span>
+                <span class="size-dot">L</span>
+            </div>
+            <div class="pcard__colors">
+                <div class="color-swatch active" data-color="beige" title="Бежевый">
+                    <img src="img/img 1.png" alt="Бежевый">
+                </div>
+                <div class="color-swatch" data-color="black" title="Чёрный">
+                    <img src="img/img 2.png" alt="Чёрный">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="../product/milano/index.html" style="display:contents;">
+    <div class="pcard" data-cat="outer" data-price="145000" data-id="2" data-name="ПАЛЬТО MILANO" data-slug="milano">
+        <div class="pcard__img-wrap">
+            <span class="pcard__badge pcard__badge--hit">HIT</span>
+            <img src="img/img 2.png" alt="Пальто Milano" class="pcard__img">
+            <button class="pcard__wish" data-id="2" aria-label="В избранное">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+        </div>
+        <div class="pcard__info">
+            <p class="pcard__name">ПАЛЬТО MILANO</p>
+            <p class="pcard__cat">Верхняя одежда</p>
+            <p class="pcard__price">145 000 ₸</p>
+            <div class="pcard__sizes">
+                <span class="size-dot active">XS</span>
+                <span class="size-dot">S</span>
+                <span class="size-dot">M</span>
+                <span class="size-dot">L</span>
+            </div>
+            <div class="pcard__colors">
+                <div class="color-swatch active" data-color="black" title="Чёрный">
+                    <img src="img/img 2.png" alt="Чёрный">
+                </div>
+                <div class="color-swatch" data-color="cream" title="Кремовый">
+                    <img src="img/img 1.png" alt="Кремовый">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="../product/luna/index.html" style="display:contents;">
+    <div class="pcard" data-cat="dress" data-price="79900" data-id="3" data-name="ПЛАТЬЕ LUNA" data-slug="luna">
+        <div class="pcard__img-wrap">
+            <img src="img/img 1.png" alt="Платье Luna" class="pcard__img">
+            <button class="pcard__wish" data-id="3" aria-label="В избранное">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+        </div>
+        <div class="pcard__info">
+            <p class="pcard__name">ПЛАТЬЕ LUNA</p>
+            <p class="pcard__cat">Женское</p>
+            <p class="pcard__price">79 900 ₸</p>
+            <div class="pcard__sizes">
+                <span class="size-dot active">XS</span>
+                <span class="size-dot">S</span>
+                <span class="size-dot">M</span>
+                <span class="size-dot">L</span>
+            </div>
+            <div class="pcard__colors">
+                <div class="color-swatch active" data-color="brown" title="Коричневый">
+                    <img src="img/img 2.png" alt="Коричневый">
+                </div>
+                <div class="color-swatch" data-color="black" title="Чёрный">
+                    <img src="img/img 1.png" alt="Чёрный">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="../product/soft/index.html" style="display:contents;">
+    <div class="pcard" data-cat="suit" data-price="129900" data-id="4" data-name="КОСТЮМ SOFT" data-slug="soft">
+        <div class="pcard__img-wrap">
+            <img src="img/img 2.png" alt="Костюм Soft" class="pcard__img">
+            <button class="pcard__wish" data-id="4" aria-label="В избранное">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+        </div>
+        <div class="pcard__info">
+            <p class="pcard__name">КОСТЮМ SOFT</p>
+            <p class="pcard__cat">Костюмы</p>
+            <p class="pcard__price">129 900 ₸</p>
+            <div class="pcard__sizes">
+                <span class="size-dot active">XS</span>
+                <span class="size-dot">S</span>
+                <span class="size-dot">M</span>
+                <span class="size-dot">L</span>
+            </div>
+            <div class="pcard__colors">
+                <div class="color-swatch active" data-color="beige" title="Бежевый">
+                    <img src="img/img 1.png" alt="Бежевый">
+                </div>
+                <div class="color-swatch" data-color="taupe" title="Серо-бежевый">
+                    <img src="img/img 2.png" alt="Серо-бежевый">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pcard" data-cat="top" data-price="34900" data-id="5" data-name="ТОП SETA">
+        <div class="pcard__img-wrap">
+            <span class="pcard__badge">NEW</span>
+            <img src="img/img 1.png" alt="Топ Seta" class="pcard__img">
+            <button class="pcard__wish" data-id="5" aria-label="В избранное">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+        </div>
+        <div class="pcard__info">
+            <p class="pcard__name">ТОП SETA</p>
+            <p class="pcard__cat">Топы</p>
+            <p class="pcard__price">34 900 ₸</p>
+            <div class="pcard__sizes">
+                <span class="size-dot active">XS</span>
+                <span class="size-dot">S</span>
+                <span class="size-dot">M</span>
+                <span class="size-dot">L</span>
+            </div>
+            <div class="pcard__colors">
+                <div class="color-swatch active" data-color="cream" title="Кремовый">
+                    <img src="img/img 2.png" alt="Кремовый">
+                </div>
+                <div class="color-swatch" data-color="caramel" title="Карамельный">
+                    <img src="img/img 1.png" alt="Карамельный">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pcard" data-cat="outer" data-price="189000" data-id="6" data-name="ПЛАЩ AQUA">
+        <div class="pcard__img-wrap">
+            <img src="img/img 2.png" alt="Плащ Aqua" class="pcard__img">
+            <button class="pcard__wish" data-id="6" aria-label="В избранное">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+        </div>
+        <div class="pcard__info">
+            <p class="pcard__name">ПЛАЩ AQUA</p>
+            <p class="pcard__cat">Верхняя одежда</p>
+            <p class="pcard__price">189 000 ₸</p>
+            <div class="pcard__sizes">
+                <span class="size-dot active">XS</span>
+                <span class="size-dot">S</span>
+                <span class="size-dot">M</span>
+                <span class="size-dot">L</span>
+            </div>
+            <div class="pcard__colors">
+                <div class="color-swatch active" data-color="sage" title="Шалфей">
+                    <img src="img/img 1.png" alt="Шалфей">
+                </div>
+                <div class="color-swatch" data-color="black" title="Чёрный">
+                    <img src="img/img 2.png" alt="Чёрный">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pcard" data-cat="dress" data-price="94900" data-id="7" data-name="ПЛАТЬЕ SERA">
+        <div class="pcard__img-wrap">
+            <span class="pcard__badge pcard__badge--hit">HIT</span>
+            <img src="img/img 1.png" alt="Платье Sera" class="pcard__img">
+            <button class="pcard__wish" data-id="7" aria-label="В избранное">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+        </div>
+        <div class="pcard__info">
+            <p class="pcard__name">ПЛАТЬЕ SERA</p>
+            <p class="pcard__cat">Женское</p>
+            <p class="pcard__price">94 900 ₸</p>
+            <div class="pcard__sizes">
+                <span class="size-dot active">XS</span>
+                <span class="size-dot">S</span>
+                <span class="size-dot">M</span>
+                <span class="size-dot">L</span>
+            </div>
+            <div class="pcard__colors">
+                <div class="color-swatch active" data-color="ivory" title="Слоновая кость">
+                    <img src="img/img 2.png" alt="Слоновая кость">
+                </div>
+                <div class="color-swatch" data-color="mocha" title="Мокко">
+                    <img src="img/img 1.png" alt="Мокко">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pcard" data-cat="acc" data-price="28900" data-id="8" data-name="СУМКА ROMA">
+        <div class="pcard__img-wrap">
+            <span class="pcard__badge">NEW</span>
+            <img src="img/img 2.png" alt="Сумка Roma" class="pcard__img">
+            <button class="pcard__wish" data-id="8" aria-label="В избранное">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+        </div>
+        <div class="pcard__info">
+            <p class="pcard__name">СУМКА ROMA</p>
+            <p class="pcard__cat">Аксессуары</p>
+            <p class="pcard__price">28 900 ₸</p>
+            <div class="pcard__sizes">
+                <span class="size-dot active">ONE SIZE</span>
+            </div>
+            <div class="pcard__colors">
+                <div class="color-swatch active" data-color="caramel" title="Карамельный">
+                    <img src="img/img 1.png" alt="Карамельный">
+                </div>
+                <div class="color-swatch" data-color="black" title="Чёрный">
+                    <img src="img/img 2.png" alt="Чёрный">
+                </div>
+                <div class="color-swatch" data-color="cream" title="Кремовый">
+                    <img src="img/img 1.png" alt="Кремовый">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ═══ ПОКАЗАТЬ ЕЩЁ ═══ -->
+<div class="show-more-wrap">
+    <button class="show-more-btn" id="showMoreBtn">
+        ПОКАЗАТЬ ЕЩЁ
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <polyline points="6 9 12 15 18 9"/>
+        </svg>
+    </button>
+</div>
+
+<!-- ═══ МОДАЛКА «ДОБАВИТЬ В КОРЗИНУ» ═══ -->
+<div class="add-backdrop" id="addBackdrop"></div>
+<div class="add-sheet" id="addSheet">
+    <div class="add-sheet__bar"></div>
+    <div class="add-sheet__img-row">
+        <img class="add-sheet__img" id="sheetImg" src="" alt="">
+        <div class="add-sheet__meta">
+            <p class="add-sheet__name" id="sheetName"></p>
+            <p class="add-sheet__price" id="sheetPrice"></p>
+        </div>
+    </div>
+    <p class="add-sheet__label">ВЫБЕРИТЕ РАЗМЕР</p>
+    <div class="add-sheet__sizes" id="sheetSizes"></div>
+    <button class="add-sheet__btn" id="sheetAddBtn">ДОБАВИТЬ В КОРЗИНУ</button>
+</div>
+
+<!-- ═══ КОРЗИНА (DRAWER) ═══ -->
+<div class="cart-backdrop" id="cartBackdrop"></div>
+<div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer__header">
+        <p class="cart-drawer__title">КОРЗИНА</p>
+        <button class="cart-drawer__close" id="cartClose">✕</button>
+    </div>
+    <div class="cart-drawer__body" id="cartBody">
+        <div class="cart-empty" id="cartEmpty">
+            <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <p>Корзина пуста</p>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+    </div>
+    <div class="cart-drawer__footer" id="cartFooter" style="display:none">
+        <div class="cart-total">
+            <span>ИТОГО</span>
+            <span id="cartTotal">0 ₸</span>
+        </div>
+        <button class="cart-checkout-btn">ОФОРМИТЬ ЗАКАЗ →</button>
+    </div>
+</div>
+
+<!-- ═══ TOAST ═══ -->
+<div class="toast" id="toast"></div>
+
+<style>
+/* ─── ПОИСК ОВЕРЛЕЙ ─── */
+.search-overlay {
+    position: fixed; inset: 0;
+    background: #f8f7f4;
+    z-index: 300;
+    display: flex; flex-direction: column;
+    transform: translateY(-100%);
+    transition: transform 0.38s cubic-bezier(0.77,0,0.175,1);
+}
+.search-overlay.active { transform: translateY(0); }
+
+.search-overlay__top {
+    display: flex; align-items: center; gap: 10px;
+    padding: 56px 16px 12px;
+    border-bottom: 1px solid rgba(0,0,0,0.09);
+    flex-shrink: 0;
+}
+.search-input-wrap {
+    flex: 1; display: flex; align-items: center;
+    background: rgba(0,0,0,0.05); border-radius: 12px;
+    padding: 0 12px; gap: 10px; height: 44px;
+}
+.search-icon-inp { width: 18px; height: 18px; flex-shrink: 0; color: rgba(0,0,0,0.4); }
+.search-input {
+    flex: 1; background: none; border: none; outline: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px; font-weight: 400; color: #1a1a1a;
+}
+.search-input::placeholder { color: rgba(0,0,0,0.32); }
+.search-clear {
+    background: none; border: none;
+    font-size: 14px; color: rgba(0,0,0,0.35); cursor: pointer;
+    display: none; padding: 4px;
+}
+.search-clear.visible { display: block; }
+.search-cancel {
+    background: none; border: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px; font-weight: 400; color: #1a1a1a;
+    cursor: pointer; white-space: nowrap; padding: 4px 0;
+}
+
+.search-suggestions { padding: 20px 20px; flex-shrink: 0; }
+.search-hint {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.12em;
+    color: rgba(0,0,0,0.38); margin-bottom: 14px;
+}
+.search-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.search-tag {
+    background: white; border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 30px; padding: 7px 16px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px; font-weight: 400; color: #1a1a1a;
+    cursor: pointer; transition: background 0.15s;
+}
+.search-tag:active { background: #f0ede8; }
+
+.search-results { flex: 1; overflow-y: auto; padding: 0 16px 20px; }
+.search-results__title {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.12em;
+    color: rgba(0,0,0,0.38); padding: 16px 4px 12px;
+}
+.search-results__grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+
+/* Поисковая мини-карточка */
+.search-pcard {
+    cursor: pointer;
+}
+.search-pcard__img {
+    width: 100%; aspect-ratio: 3/4; object-fit: cover;
+    border-radius: 6px; background: #ede9e3; display: block;
+    margin-bottom: 8px;
+}
+.search-pcard__name {
+    font-family: 'Playfair Display', serif;
+    font-size: 12px; font-weight: 500; color: #1a1a1a;
+    margin-bottom: 2px; letter-spacing: 0.01em;
+}
+.search-pcard__price { font-size: 11px; font-weight: 600; color: #1a1a1a; }
+
+/* ─── ИЗБРАННОЕ ДРАВЕР ─── */
+.wish-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0);
+    z-index: 190; pointer-events: none;
+    transition: background 0.3s;
+}
+.wish-backdrop.active { background: rgba(0,0,0,0.35); pointer-events: auto; }
+.wish-drawer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #faf9f7;
+    z-index: 200; border-radius: 18px 18px 0 0;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.77,0,0.175,1);
+    max-height: 85vh; display: flex; flex-direction: column;
+    box-shadow: 0 -4px 40px rgba(0,0,0,0.09);
+}
+.wish-drawer::before {
+    content: ''; display: block; width: 40px; height: 4px;
+    background: rgba(0,0,0,0.15); border-radius: 2px;
+    margin: 12px auto 0; flex-shrink: 0;
+}
+.wish-drawer.open { transform: translateY(0); }
+.wish-items { padding: 0 24px 24px; overflow-y: auto; }
+.wish-item {
+    display: flex; gap: 14px; align-items: center;
+    padding: 14px 0; border-bottom: 1px solid rgba(0,0,0,0.07);
+}
+.wish-item__img {
+    width: 56px; height: 70px; object-fit: cover;
+    border-radius: 6px; background: #ede9e3; flex-shrink: 0;
+}
+.wish-item__info { flex: 1; }
+.wish-item__name {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px; font-weight: 500; color: #1a1a1a;
+    margin-bottom: 3px;
+}
+.wish-item__price { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+.wish-item__remove {
+    background: none; border: none; color: rgba(0,0,0,0.25);
+    font-size: 16px; cursor: pointer; padding: 4px;
+}
+
+/* ─── МОДАЛКА ДОБАВЛЕНИЯ ─── */
+.add-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0);
+    z-index: 190; pointer-events: none;
+    transition: background 0.3s;
+}
+.add-backdrop.active { background: rgba(0,0,0,0.35); pointer-events: auto; }
+.add-sheet {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #faf9f7; z-index: 200;
+    border-radius: 20px 20px 0 0; padding: 0 24px 36px;
+    transform: translateY(100%);
+    transition: transform 0.38s cubic-bezier(0.77,0,0.175,1);
+    box-shadow: 0 -4px 40px rgba(0,0,0,0.09);
+}
+.add-sheet.open { transform: translateY(0); }
+.add-sheet__bar {
+    width: 40px; height: 4px;
+    background: rgba(0,0,0,0.14); border-radius: 2px;
+    margin: 14px auto 20px;
+}
+.add-sheet__img-row {
+    display: flex; gap: 16px; align-items: center; margin-bottom: 22px;
+}
+.add-sheet__img {
+    width: 72px; height: 90px; object-fit: cover;
+    border-radius: 6px; background: #ede9e3; flex-shrink: 0;
+}
+.add-sheet__meta { flex: 1; }
+.add-sheet__name {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px; font-weight: 500; letter-spacing: 0.02em;
+    color: #1a1a1a; margin-bottom: 6px; line-height: 1.2;
+}
+.add-sheet__price { font-size: 15px; font-weight: 600; color: #1a1a1a; }
+.add-sheet__label {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.14em;
+    color: rgba(0,0,0,0.4); margin-bottom: 14px;
+}
+.add-sheet__sizes {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px;
+}
+.add-size-btn {
+    height: 40px; min-width: 56px;
+    border: 1.5px solid rgba(0,0,0,0.16);
+    background: none; color: rgba(0,0,0,0.55);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.08em;
+    border-radius: 8px; cursor: pointer; padding: 0 14px;
+    transition: all 0.15s;
+}
+.add-size-btn.active { background: #1a1a1a; color: white; border-color: #1a1a1a; }
+.add-sheet__btn {
+    width: 100%; height: 52px;
+    background: #1a1a1a; color: white;
+    border: none; border-radius: 12px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.2em;
+    cursor: pointer; transition: background 0.2s;
+}
+.add-sheet__btn:active { background: #333; }
+
+/* ─── ЦВЕТ-СВОТЧ (мини-фото) ─── */
+.pcard__colors { display: flex; gap: 6px; margin-top: 7px; }
+.color-swatch {
+    width: 28px; height: 36px;
+    border-radius: 4px; overflow: hidden;
+    cursor: pointer; flex-shrink: 0;
+    border: 1.5px solid rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.color-swatch img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.color-swatch.active {
+    border-color: #1a1a1a;
+    box-shadow: 0 0 0 1.5px #1a1a1a;
+    transform: scale(1.05);
+}
+</style>
+
+<script>
+// ═══ ДАННЫЕ ═══
+const PRODUCTS = [
+    { id: 1, name: 'ПЛАТЬЕ ARIA',   cat: 'dress', price: 89900,  img: 'img/img 1.png', badge: 'NEW' },
+    { id: 2, name: 'ПАЛЬТО MILANO', cat: 'outer', price: 145000, img: 'img/img 2.png', badge: 'HIT' },
+    { id: 3, name: 'ПЛАТЬЕ LUNA',   cat: 'dress', price: 79900,  img: 'img/img 1.png', badge: '' },
+    { id: 4, name: 'КОСТЮМ SOFT',   cat: 'suit',  price: 129900, img: 'img/img 2.png', badge: '' },
+    { id: 5, name: 'ТОП SETA',      cat: 'top',   price: 34900,  img: 'img/img 1.png', badge: 'NEW' },
+    { id: 6, name: 'ПЛАЩ AQUA',     cat: 'outer', price: 189000, img: 'img/img 2.png', badge: '' },
+    { id: 7, name: 'ПЛАТЬЕ SERA',   cat: 'dress', price: 94900,  img: 'img/img 1.png', badge: 'HIT' },
+    { id: 8, name: 'СУМКА ROMA',    cat: 'acc',   price: 28900,  img: 'img/img 2.png', badge: 'NEW' },
+];
+
+let cart = JSON.parse(localStorage.getItem('nure_cart') || '[]');
+let wishlist = JSON.parse(localStorage.getItem('nure_wishlist') || '[]');
+
+function saveCart() { localStorage.setItem('nure_cart', JSON.stringify(cart)); }
+function saveWishlist() { localStorage.setItem('nure_wishlist', JSON.stringify(wishlist)); }
+function formatPrice(p) { return p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+
+// ═══ БЕЙДЖИ ═══
+function updateBadges() {
+    const total = cart.reduce((s, i) => s + i.qty, 0);
+    const cb = document.getElementById('cartBadge');
+    cb.textContent = total; cb.style.display = total > 0 ? 'flex' : 'none';
+    const wb = document.getElementById('wishlistBadge');
+    wb.textContent = wishlist.length; wb.style.display = wishlist.length > 0 ? 'flex' : 'none';
+}
+
+// ═══ КОРЗИНА ═══
+function renderCart() {
+    const body = document.getElementById('cartItems');
+    const empty = document.getElementById('cartEmpty');
+    const footer = document.getElementById('cartFooter');
+    if (cart.length === 0) {
+        empty.style.display = 'flex'; body.innerHTML = ''; footer.style.display = 'none'; return;
+    }
+    empty.style.display = 'none'; footer.style.display = 'block';
+    body.innerHTML = cart.map(item => `
+        <div class="cart-item">
+            <div class="cart-item__info">
+                <p class="cart-item__name">${item.name}</p>
+                <p class="cart-item__size">Размер: ${item.size}</p>
+                <p class="cart-item__price">${formatPrice(item.price)} ₸</p>
+            </div>
+            <div class="cart-item__controls">
+                <button class="qty-btn" onclick="changeQty(${item.id},'${item.size}',-1)">−</button>
+                <span class="qty-val">${item.qty}</span>
+                <button class="qty-btn" onclick="changeQty(${item.id},'${item.size}',1)">+</button>
+                <button class="remove-btn" onclick="removeItem(${item.id},'${item.size}')">✕</button>
+            </div>
+        </div>
+    `).join('');
+    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    document.getElementById('cartTotal').textContent = formatPrice(total) + ' ₸';
+}
+function changeQty(id, size, delta) {
+    const idx = cart.findIndex(i => i.id === id && i.size === size);
+    if (idx === -1) return;
+    cart[idx].qty += delta;
+    if (cart[idx].qty <= 0) cart.splice(idx, 1);
+    saveCart(); renderCart(); updateBadges();
+}
+function removeItem(id, size) {
+    cart = cart.filter(i => !(i.id === id && i.size === size));
+    saveCart(); renderCart(); updateBadges();
+}
+function addToCart(id, name, price, size) {
+    const existing = cart.find(i => i.id === id && i.size === size);
+    if (existing) { existing.qty++; }
+    else { cart.push({ id, name, price, size, qty: 1 }); }
+    saveCart(); renderCart(); updateBadges();
+}
+
+// ═══ ИЗБРАННОЕ ═══
+function renderWishlist() {
+    const body = document.getElementById('wishItems');
+    const empty = document.getElementById('wishEmpty');
+    if (wishlist.length === 0) {
+        empty.style.display = 'flex'; body.innerHTML = ''; return;
+    }
+    empty.style.display = 'none';
+    const items = wishlist.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean);
+    body.innerHTML = items.map(p => `
+        <div class="wish-item">
+            <img class="wish-item__img" src="${p.img}" alt="${p.name}">
+            <div class="wish-item__info">
+                <p class="wish-item__name">${p.name}</p>
+                <p class="wish-item__price">${formatPrice(p.price)} ₸</p>
+            </div>
+            <button class="wish-item__remove" onclick="removeFromWishlist(${p.id})">✕</button>
+        </div>
+    `).join('');
+}
+function removeFromWishlist(id) {
+    wishlist = wishlist.filter(i => i !== id);
+    saveWishlist(); renderWishlist(); updateBadges();
+    const btn = document.querySelector(`.pcard__wish[data-id="${id}"]`);
+    if (btn) btn.classList.remove('active');
+}
+
+// ═══ ТОСТ ═══
+let toastTimer;
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('visible'), 2500);
+}
+
+// ═══ МОДАЛКА ДОБАВЛЕНИЯ В КОРЗИНУ ═══
+const addSheet = document.getElementById('addSheet');
+const addBackdrop = document.getElementById('addBackdrop');
+let currentCardData = null, selectedSheetSize = null;
+
+function openAddSheet(card) {
+    const id = parseInt(card.dataset.id);
+    const name = card.dataset.name;
+    const price = parseInt(card.dataset.price);
+    const img = card.querySelector('.pcard__img').src;
+    const sizes = [...card.querySelectorAll('.size-dot')].map(s => s.textContent);
+    const activeSize = card.querySelector('.size-dot.active');
+    selectedSheetSize = activeSize ? activeSize.textContent : sizes[0];
+    currentCardData = { id, name, price };
+    document.getElementById('sheetImg').src = img;
+    document.getElementById('sheetName').textContent = name;
+    document.getElementById('sheetPrice').textContent = formatPrice(price) + ' ₸';
+    const sizesEl = document.getElementById('sheetSizes');
+    sizesEl.innerHTML = sizes.map(s => `
+        <button class="add-size-btn ${s === selectedSheetSize ? 'active' : ''}" data-size="${s}">${s}</button>
+    `).join('');
+    addSheet.classList.add('open'); addBackdrop.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeAddSheet() {
+    addSheet.classList.remove('open'); addBackdrop.classList.remove('active');
+    document.body.style.overflow = '';
+}
+document.getElementById('sheetSizes').addEventListener('click', e => {
+    const btn = e.target.closest('.add-size-btn');
+    if (!btn) return;
+    document.querySelectorAll('.add-size-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active'); selectedSheetSize = btn.dataset.size;
+});
+document.getElementById('sheetAddBtn').addEventListener('click', () => {
+    if (!currentCardData || !selectedSheetSize) return;
+    addToCart(currentCardData.id, currentCardData.name, currentCardData.price, selectedSheetSize);
+    closeAddSheet(); showToast(currentCardData.name + ' добавлен в корзину');
+});
+addBackdrop.addEventListener('click', closeAddSheet);
+
+// ═══ КЛИКИ ПО КАРТОЧКАМ ═══
+document.getElementById('productsGrid').addEventListener('click', e => {
+    const wishBtn = e.target.closest('.pcard__wish');
+    if (wishBtn) {
+        e.stopPropagation();
+        const id = parseInt(wishBtn.dataset.id);
+        const idx = wishlist.indexOf(id);
+        if (idx === -1) { wishlist.push(id); wishBtn.classList.add('active'); showToast('Добавлено в избранное'); }
+        else { wishlist.splice(idx, 1); wishBtn.classList.remove('active'); }
+        saveWishlist(); updateBadges(); return;
+    }
+    const sizeDot = e.target.closest('.size-dot');
+    if (sizeDot) {
+        e.stopPropagation();
+        const card = sizeDot.closest('.pcard');
+        card.querySelectorAll('.size-dot').forEach(d => d.classList.remove('active'));
+        sizeDot.classList.add('active'); return;
+    }
+    const colorSwatch = e.target.closest('.color-swatch');
+    if (colorSwatch) {
+        e.stopPropagation();
+        const card = colorSwatch.closest('.pcard');
+        card.querySelectorAll('.color-swatch').forEach(d => d.classList.remove('active'));
+        colorSwatch.classList.add('active'); return;
+    }
+    const card = e.target.closest('.pcard');
+    if (card) openAddSheet(card);
+});
+
+// ═══ КОРЗИНА ═══
+const cartBtn = document.getElementById('cartBtn');
+const cartDrawer = document.getElementById('cartDrawer');
+const cartBackdrop = document.getElementById('cartBackdrop');
+const cartClose = document.getElementById('cartClose');
+function openCart() { cartDrawer.classList.add('open'); cartBackdrop.classList.add('active'); document.body.style.overflow = 'hidden'; renderCart(); }
+function closeCart() { cartDrawer.classList.remove('open'); cartBackdrop.classList.remove('active'); document.body.style.overflow = ''; }
+cartBtn.addEventListener('click', openCart);
+cartClose.addEventListener('click', closeCart);
+cartBackdrop.addEventListener('click', closeCart);
+
+// ═══ ИЗБРАННОЕ ДРАВЕР ═══
+const wishBtn = document.getElementById('wishBtn');
+const wishDrawer = document.getElementById('wishDrawer');
+const wishBackdrop = document.getElementById('wishBackdrop');
+const wishClose = document.getElementById('wishClose');
+function openWish() { wishDrawer.classList.add('open'); wishBackdrop.classList.add('active'); document.body.style.overflow = 'hidden'; renderWishlist(); }
+function closeWish() { wishDrawer.classList.remove('open'); wishBackdrop.classList.remove('active'); document.body.style.overflow = ''; }
+wishBtn.addEventListener('click', openWish);
+wishClose.addEventListener('click', closeWish);
+wishBackdrop.addEventListener('click', closeWish);
+
+// ═══ БУРГЕР ═══
+const burger = document.getElementById('burgerBtn');
+const overlay = document.getElementById('navOverlay');
+const backdrop = document.getElementById('navBackdrop');
+const navClose = document.getElementById('navClose');
+function openMenu() { overlay.classList.add('active'); backdrop.classList.add('active'); document.body.style.overflow = 'hidden'; }
+function closeMenu() { overlay.classList.remove('active'); backdrop.classList.remove('active'); document.body.style.overflow = ''; }
+burger.addEventListener('click', openMenu);
+navClose.addEventListener('click', closeMenu);
+backdrop.addEventListener('click', closeMenu);
+
+// ═══ ПОИСК ═══
+const searchBtn = document.getElementById('searchBtn');
+const searchOverlay = document.getElementById('searchOverlay');
+const searchInput = document.getElementById('searchInput');
+const searchClear = document.getElementById('searchClear');
+const searchCancel = document.getElementById('searchCancel');
+const searchSuggestions = document.getElementById('searchSuggestions');
+const searchResults = document.getElementById('searchResults');
+const searchResultsGrid = document.getElementById('searchResultsGrid');
+const searchResultsTitle = document.getElementById('searchResultsTitle');
+
+function openSearch() {
+    searchOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => searchInput.focus(), 350);
+}
+function closeSearch() {
+    searchOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+    searchInput.value = ''; searchClear.classList.remove('visible');
+    searchSuggestions.style.display = ''; searchResults.style.display = 'none';
+}
+searchBtn.addEventListener('click', openSearch);
+searchCancel.addEventListener('click', closeSearch);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
+
+searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    searchClear.classList.toggle('visible', q.length > 0);
+    if (q.length === 0) {
+        searchSuggestions.style.display = ''; searchResults.style.display = 'none'; return;
+    }
+    searchSuggestions.style.display = 'none'; searchResults.style.display = '';
+    const found = PRODUCTS.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        (p.cat === 'dress' && 'платье'.includes(q)) ||
+        (p.cat === 'outer' && ('пальто'.includes(q) || 'плащ'.includes(q))) ||
+        (p.cat === 'suit' && 'костюм'.includes(q)) ||
+        (p.cat === 'top' && 'топ'.includes(q)) ||
+        (p.cat === 'acc' && ('аксессуар'.includes(q) || 'сумка'.includes(q)))
+    );
+    searchResultsTitle.textContent = found.length > 0 ? `НАЙДЕНО ${found.length} ТОВАРА` : 'НИЧЕГО НЕ НАЙДЕНО';
+    searchResultsGrid.innerHTML = found.map(p => `
+        <div class="search-pcard" onclick="closeSearch()">
+            <img class="search-pcard__img" src="${p.img}" alt="${p.name}">
+            <p class="search-pcard__name">${p.name}</p>
+            <p class="search-pcard__price">${formatPrice(p.price)} ₸</p>
+        </div>
+    `).join('');
+});
+searchClear.addEventListener('click', () => {
+    searchInput.value = ''; searchClear.classList.remove('visible');
+    searchSuggestions.style.display = ''; searchResults.style.display = 'none';
+    searchInput.focus();
+});
+document.querySelectorAll('.search-tag').forEach(tag => {
+    tag.addEventListener('click', () => {
+        searchInput.value = tag.textContent;
+        searchInput.dispatchEvent(new Event('input'));
+    });
+});
+
+// ═══ ФИЛЬТР КАТЕГОРИЙ ═══
+document.getElementById('catFilter').addEventListener('click', e => {
+    const btn = e.target.closest('.cat-btn');
+    if (!btn) return;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const cat = btn.dataset.cat;
+    document.querySelectorAll('.pcard').forEach(card => {
+        card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+    });
+});
+
+// ═══ СОРТИРОВКА ═══
+document.getElementById('sortSelect').addEventListener('change', e => {
+    const val = e.target.value;
+    const grid = document.getElementById('productsGrid');
+    const cards = [...grid.querySelectorAll('.pcard')];
+    cards.sort((a, b) => {
+        if (val === 'asc') return parseInt(a.dataset.price) - parseInt(b.dataset.price);
+        if (val === 'desc') return parseInt(b.dataset.price) - parseInt(a.dataset.price);
+        return 0;
+    });
+    cards.forEach(c => grid.appendChild(c));
+});
+
+// ═══ INIT ═══
+updateBadges();
+wishlist.forEach(id => {
+    const btn = document.querySelector(`.pcard__wish[data-id="${id}"]`);
+    if (btn) btn.classList.add('active');
+});
+</script>
+
+</body>
+</html>
